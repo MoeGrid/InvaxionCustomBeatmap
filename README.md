@@ -1,8 +1,10 @@
 # InvaxionCustomSpectrum
 
-### ÒôÁé×ÔÖÆÆ×¹¤¾ß
+### éŸ³çµè‡ªåˆ¶è°±å·¥å…·
 
-### ÏîÄ¿ÖĞÊ¹ÓÃµÄ¿â
+å°šæœªå®Œå·¥è¯·å‹¿ä½¿ç”¨
+
+### é¡¹ç›®ä¸­ä½¿ç”¨çš„åº“
 - [Harmony](https://github.com/pardeike/Harmony/wiki/Utilities)
 - [dnlib](https://github.com/0xd4d/dnlib)
 - [Json.NET](https://www.newtonsoft.com/json)
