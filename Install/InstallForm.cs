@@ -91,9 +91,7 @@ namespace InvaxionCustomSpectrumInstall
                 // 备份游戏DLL
                 Log($"备份文件 {AssemblyName} ...");
                 File.Copy(AssemblyFile, BackupAssemblyName, true);
-
                 
-
                 Log("安装补丁中...");
 
                 // 复制用到的类库
@@ -122,7 +120,7 @@ namespace InvaxionCustomSpectrumInstall
                 bytes = File.ReadAllBytes(TmpAssemblyName);
                 bytes = XXTEA.Encrypt(bytes, AssemblyKey);
                 File.WriteAllBytes(AssemblyFile, bytes);
-                //File.Delete(TmpAssemblyName);
+                File.Delete(TmpAssemblyName);
 
                 Log("安装成功!");
 
@@ -147,6 +145,11 @@ namespace InvaxionCustomSpectrumInstall
         }
 
         private void InstallForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
         {
 
         }

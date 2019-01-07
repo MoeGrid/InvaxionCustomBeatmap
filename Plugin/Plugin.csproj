@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="Bootstrap.cs" />
     <Compile Include="HomemadeMusic.cs" />
+    <Compile Include="Hook\ExtensionMethodsHook.cs" />
     <Compile Include="Hook\GlobalConfigHook.cs" />
     <Compile Include="Hook\MazicDataHook.cs" />
     <Compile Include="Hook\PlayDataHook.cs" />
@@ -49,6 +50,7 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="UnityEngine">
       <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>

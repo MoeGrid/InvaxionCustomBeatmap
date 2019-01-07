@@ -1,4 +1,5 @@
 ﻿using LitJson;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -9,7 +10,6 @@ namespace InvaxionCustomSpectrumPlugin
 {
     class MusicLoader
     {
-
         private static Dictionary<string, MusicInfoDataExt> _MusicDic;
         public static Dictionary<string, MusicInfoDataExt> MusicDic {
             get {
@@ -61,7 +61,7 @@ namespace InvaxionCustomSpectrumPlugin
             }
             return null;
         }
-
+        
         public static AudioClip GetXfadeFile(string id)
         {
             var music = _MusicDic[id];
@@ -96,6 +96,6 @@ namespace InvaxionCustomSpectrumPlugin
             AudioClip audioClip = www.GetAudioClip(true, true, AudioType.WAV);
             return audioClip;
         }
-        
+
     }
 }

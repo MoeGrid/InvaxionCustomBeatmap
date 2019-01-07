@@ -54,6 +54,11 @@ namespace InvaxionCustomSpectrumPlugin
             var readOneMusicMap = AccessTools.Method(typeof(MazicData), nameof(MazicData.ReadOneMusicMap));
             var readOneMusicMapPrefix = AccessTools.Method(typeof(MazicDataHook), nameof(MazicDataHook.ReadOneMusicMapPrefix));
             instance.Patch(readOneMusicMap, new HarmonyMethod(readOneMusicMapPrefix));
+
+            // 暂停界面封面图Hook
+            var getCoverSprite = AccessTools.Method(typeof(ExtensionMethods), nameof(ExtensionMethods.getCoverSprite));
+            var getCoverSpritePrefix = AccessTools.Method(typeof(ExtensionMethodsHook), nameof(ExtensionMethodsHook.GetCoverSpritePrefix));
+            instance.Patch(getCoverSprite, new HarmonyMethod(getCoverSpritePrefix));
         }
     }
 }
