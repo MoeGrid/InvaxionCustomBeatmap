@@ -1,5 +1,5 @@
 # InvaxionCustomSpectrum
-音灵自制谱工具
+###音灵自制谱工具
 
 ### 项目中使用的库
 - [Harmony](https://github.com/pardeike/Harmony/wiki/Utilities)
