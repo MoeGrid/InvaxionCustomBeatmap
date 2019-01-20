@@ -19,10 +19,10 @@ namespace OSU2INVAXION
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //try
-            //{
+            try
+            {
                 string map = new MapConverter(textBox1.Text, comboBox1.SelectedIndex).Convert();
-                
+
                 SaveFileDialog dialog = new SaveFileDialog();
                 dialog.Title = "保存音灵谱面文件";
                 dialog.Filter = "文本文档(*.txt)|*.txt";
@@ -32,10 +32,11 @@ namespace OSU2INVAXION
                     string file = dialog.FileName.ToString();
                     File.WriteAllText(file, map);
                 }
-            //} catch (Exception exc)
-            //{
-            //    MessageBox.Show(exc.Message);
-            //}
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
