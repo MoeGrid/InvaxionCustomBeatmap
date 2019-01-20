@@ -1,4 +1,4 @@
-# 音灵自制谱工具
+# 音灵自制谱MOD
 
 1. Install (自制谱MOD安装器)
 2. Plugin (自制谱MOD本体)
