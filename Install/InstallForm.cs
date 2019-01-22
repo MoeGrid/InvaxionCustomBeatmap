@@ -9,16 +9,15 @@ namespace InvaxionCustomSpectrumInstall
 {
     public partial class InstallForm : Form
     {
-        private static readonly string CurrentGamePath = "F:\\Program Files (x86)\\Steam\\steamapps\\common\\音灵 INVAXION";
-        private static readonly string CurrentManagedPath = $"{CurrentGamePath}\\INVAXION_Data\\Managed";
         private static readonly string AssemblyName = "Assembly-CSharp.dll";
+        private static readonly string AssemblyKey = "Aquatrax_wearshoes";
         private static readonly string PatchClass = "Aquatrax.GameController";
         private static readonly string PatchMethod = "Awake";
-
-        private static readonly string AssemblyFile = Path.Combine(CurrentManagedPath, AssemblyName);
-        private static readonly string BackupAssemblyName = $"{AssemblyFile}.backup_";
-        private static readonly string TmpAssemblyName = $"{AssemblyFile}.tmp_";
-        private static readonly string AssemblyKey = "Aquatrax_wearshoes";
+        
+        private static string CurrentGamePath;
+        private static string CurrentManagedPath;
+        private static string AssemblyFile;
+        private static string BackupAssemblyName;
         
         public InstallForm()
         {
@@ -42,6 +41,25 @@ namespace InvaxionCustomSpectrumInstall
             {
                 Log($"找不到备份文件，无法完成卸载！");
             }
+        }
+        
+        private void button3_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog
+            {
+                Description = "请选择游戏安装目录"
+            };
+            if (dialog.ShowDialog() == DialogResult.OK && Directory.Exists(dialog.SelectedPath))
+            {
+                textBox1.Text = dialog.SelectedPath;
+                
+                CurrentGamePath = dialog.SelectedPath;
+                CurrentManagedPath = Path.Combine(CurrentGamePath, @"INVAXION_Data\Managed");
+
+                AssemblyFile = Path.Combine(CurrentManagedPath, AssemblyName);
+                BackupAssemblyName = $"{AssemblyFile}.backup_";
+            }
+            dialog.Dispose();
         }
 
         /******************************/
@@ -114,16 +132,16 @@ namespace InvaxionCustomSpectrumInstall
                 targetMethod.Body.Instructions.Insert(targetMethod.Body.Instructions.Count - 1, instr);
 
                 // 保存
-                assembly.Write(TmpAssemblyName);
+                string tmp = $"{AssemblyFile}.tmp_";
+                assembly.Write(tmp);
 
                 // 加密
-                bytes = File.ReadAllBytes(TmpAssemblyName);
+                bytes = File.ReadAllBytes(tmp);
                 bytes = XXTEA.Encrypt(bytes, AssemblyKey);
                 File.WriteAllBytes(AssemblyFile, bytes);
-                File.Delete(TmpAssemblyName);
+                File.Delete(tmp);
 
                 Log("安装成功!");
-
             }
             catch (Exception e)
             {
@@ -144,14 +162,5 @@ namespace InvaxionCustomSpectrumInstall
             listBox1.TopIndex = listBox1.Items.Count - 1;
         }
 
-        private void InstallForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

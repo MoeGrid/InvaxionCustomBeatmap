@@ -78,6 +78,7 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(12, 11);
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(183, 21);
             this.textBox1.TabIndex = 4;
             // 
@@ -94,7 +95,6 @@
             this.Name = "InstallForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "音灵自制谱安装工具";
-            this.Load += new System.EventHandler(this.InstallForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

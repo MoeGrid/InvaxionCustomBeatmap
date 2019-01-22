@@ -21,7 +21,7 @@ namespace OSU2INVAXION
         {
             try
             {
-                string map = new MapConverter(textBox1.Text, comboBox1.SelectedIndex).Convert();
+                new MapConverter(textBox1.Text, comboBox1.SelectedIndex).Convert(out string map, out int fill);
 
                 SaveFileDialog dialog = new SaveFileDialog();
                 dialog.Title = "保存音灵谱面文件";
@@ -31,6 +31,7 @@ namespace OSU2INVAXION
                 {
                     string file = dialog.FileName.ToString();
                     File.WriteAllText(file, map);
+                    MessageBox.Show(string.Format("请使用FillAudio工具在音乐前填充 {0} 毫秒！", fill), "重要提示");
                 }
             }
             catch (Exception exc)

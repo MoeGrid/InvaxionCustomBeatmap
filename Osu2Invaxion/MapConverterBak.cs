@@ -9,10 +9,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+/*
 namespace OSU2INVAXION
 {
-    class MapConverter
+    class MapConverterBak
     {
         // 对应键代码
         private readonly static int[,] KeyMap = new int[,] {
@@ -28,18 +28,16 @@ namespace OSU2INVAXION
 
         // OSU 谱子
         private Beatmap beatmap;
+        // OSU 模式
+        private Ruleset mode;
         // 曲速
         private int bpm;
         // 一个音符时间长度
         private float oneBeatTime;
-        // 偏移
-        private int offset;
-        // 节拍细分
-        private int beatDivisor;
-        // 细分时间
-        private float oneDivisorTime;
         // 列宽
         private int columnWidth;
+        // 音乐长度
+        private int musicLen;
 
         // 临时音符
         private List<TmpNote> tmpNotes = new List<TmpNote>();
@@ -51,98 +49,123 @@ namespace OSU2INVAXION
         // 音灵谱字符串
         private StringBuilder invaxionMapStr = new StringBuilder();
 
-        public MapConverter(string file, int key)
+        public MapConverterBak(string file, int key)
         {
             if (!File.Exists(file))
                 throw new Exception("文件不存在！");
 
             // 音灵键数
             keyMode = key;
-            keyNum = keyMode == 0 ? 4 : keyMode == 1 ? 6 : keyMode == 2 ? 8 : 4;
+            keyNum = keyMode == 0 ? 4 : keyMode == 1 ? 6 : keyMode == 0 ? 8 : 4;
 
             // OSU谱子文件
             beatmap = Parser.ParseBeatmap(file);
             // 模式
-            if (beatmap.GeneralSection.Mode != Ruleset.Mania)
+            mode = beatmap.GeneralSection.Mode;
+
+            if(mode != Ruleset.Mania)
             {
                 throw new Exception("不是osu!mania谱面！");
             }
+
             // 列宽
             columnWidth = 512 / keyNum;
             // 一个音符时间长度
             oneBeatTime = beatmap.TimingPoints[0].BeatLength;
-            // 偏移
-            offset = beatmap.TimingPoints[0].Offset;
-            // 节拍细分
-            beatDivisor = beatmap.EditorSection.BeatDivisor;
-            // 细分时间
-            oneDivisorTime = oneBeatTime / beatDivisor;
             // bpm
             bpm = (int)(60 * 1000 / oneBeatTime);
+            // 音乐长度
+            musicLen = beatmap.HitObjects[beatmap.HitObjects.Count - 1].EndTime;
         }
 
-        public void Convert(out string map, out int fill)
+        public string Convert()
         {
             // 清理
             tmpNotes.Clear();
             timeLine.Clear();
             invaxionMap.Clear();
 
-            // 计算填充
-            int fillNode = (int)(offset / oneDivisorTime);
-            float fillTime = oneDivisorTime - (offset % oneDivisorTime);
-            if (fillTime > 0)
-            {
-                fillNode++;
-            }
-
             // 转为时间对应键
             foreach (var i in beatmap.HitObjects)
             {
-                int startTime = i.StartTime - offset;
-                int endTime = i.EndTime - offset;
-
-                int barIndex = 0;
-                int nodeIndex = 0;
-
                 if (i is StandardHitCircle || i is ManiaSingle)
                 {
                     // 按键
-                    CalcIndex(startTime, fillNode, out barIndex, out nodeIndex);
                     tmpNotes.Add(new TmpNote
                     {
                         Key = X2Key(i.Position.X),
-                        Action = 11,
-                        Time = startTime,
-                        BarIndex = barIndex,
-                        NodeIndex = nodeIndex,
+                        Time = i.StartTime,
+                        Action = 11
                     });
                 }
                 else if (i is StandardSlider || i is ManiaHold)
                 {
                     // 长条开始
-                    CalcIndex(startTime, fillNode, out barIndex, out nodeIndex);
                     var k = X2Key(i.Position.X);
                     tmpNotes.Add(new TmpNote
                     {
                         Key = k,
-                        Action = 31,
-                        Time = startTime,
-                        BarIndex = barIndex,
-                        NodeIndex = nodeIndex
+                        Time = i.StartTime,
+                        Action = 31
                     });
-                    CalcIndex(endTime, fillNode, out barIndex, out nodeIndex);
                     // 长条结束
                     tmpNotes.Add(new TmpNote
                     {
                         Key = k,
-                        Action = 41,
-                        Time = endTime,
-                        BarIndex = barIndex,
-                        NodeIndex = nodeIndex
+                        Time = i.EndTime,
+                        Action = 41
                     });
                 }
             };
+            tmpNotes.Sort(delegate (TmpNote x, TmpNote y)
+            {
+                return x.Time.CompareTo(y.Time);
+            });
+
+            // 生成时间线
+            float oneTime = oneBeatTime * 4 / 32; // 4拍一节 1节32份
+            float curTime = 0;
+            int curBar = 0;
+            while (curTime < musicLen)
+            {
+                for (var i = 0; i < 32; i++)
+                {
+                    timeLine.Add(curTime, new TmpTimeline()
+                    {
+                        BarIndex = curBar,
+                        NodeIndex = i
+                    });
+                    curTime += oneTime;
+                }
+                curBar++;
+            }
+
+            // 对齐并加入时间线
+            foreach (var i in tmpNotes)
+            {
+                i.Time -= 447;
+
+                // 找最近的音符节点
+                var near = float.MaxValue;
+                TmpTimeline nearObj = null;
+                foreach (var j in timeLine)
+                {
+                    var tmpVal = Math.Abs(i.Time - j.Key);
+                    if (tmpVal < near)
+                    {
+                        near = tmpVal;
+                        nearObj = j.Value;
+                    }
+                }
+
+                Console.WriteLine(near);
+
+                if (nearObj != null)
+                {
+                    i.BarIndex = nearObj.BarIndex;
+                    i.NodeIndex = nearObj.NodeIndex;
+                }
+            }
 
             // 填充谱面
             foreach (var i in tmpNotes)
@@ -191,7 +214,7 @@ namespace OSU2INVAXION
                 foreach (var j in i.Value.Tracks)
                 {
                     invaxionMapStr.AppendFormat("{0},", j.Key);
-                    for (var k = 0; k < beatDivisor * 4; k++)
+                    for (var k = 0; k < 32; k++)
                     {
                         invaxionMapStr.Append(j.Value.Nodes.ContainsKey(k) ? j.Value.Nodes[k].Action.ToString() : "00");
                     }
@@ -200,21 +223,7 @@ namespace OSU2INVAXION
                 invaxionMapStr.Remove(invaxionMapStr.Length - 2, 2);
                 invaxionMapStr.Append(";\n\n");
             }
-            map = invaxionMapStr.ToString();
-            fill = (int)Math.Round(fillTime);
-        }
-
-        private void CalcIndex(int time, int fill, out int barIndex, out int nodeIndex)
-        {
-            // 计算Index
-            int oneBarNode = beatDivisor * 4;
-            int divisorNum = (int)Math.Round(time / oneDivisorTime);
-            barIndex = divisorNum / oneBarNode;
-            nodeIndex = divisorNum % oneBarNode;
-            // 填充
-            nodeIndex += fill;
-            barIndex += nodeIndex / oneBarNode;
-            nodeIndex = nodeIndex % oneBarNode;
+            return invaxionMapStr.ToString();
         }
 
         private int X2Key(int x)
@@ -223,3 +232,4 @@ namespace OSU2INVAXION
         }
     }
 }
+*/
