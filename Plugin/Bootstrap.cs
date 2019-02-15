@@ -33,18 +33,23 @@ namespace InvaxionCustomSpectrumPlugin
             var classifyMusicInfoListPrefix = AccessTools.Method(typeof(GlobalConfigHook), nameof(GlobalConfigHook.ClassifyMusicInfoListPrefix));
             instance.Patch(classifyMusicInfoList, new HarmonyMethod(classifyMusicInfoListPrefix));
 
-            // 图片Hook
-            var musicListInit = AccessTools.Method(typeof(SelectView), nameof(SelectView.MusicListInit));
-            var musicListInitTranspiler = AccessTools.Method(typeof(SelectViewHook), nameof(SelectViewHook.MusicListInitTranspiler));
-            instance.Patch(musicListInit, null, null, new HarmonyMethod(musicListInitTranspiler));
+            // 封面图片Hook 已过时
+            //var musicListInit = AccessTools.Method(typeof(SelectView), nameof(SelectView.MusicListInit));
+            //var musicListInitTranspiler = AccessTools.Method(typeof(SelectViewHook), nameof(SelectViewHook.MusicListInitTranspiler));
+            //instance.Patch(musicListInit, null, null, new HarmonyMethod(musicListInitTranspiler));
+
+            // 封面音乐Hook 已过时
+            //var changeFxSound = AccessTools.Method(typeof(SelectView), "ChangeFxSound", new Type[] {
+            //    typeof(string)
+            //});
+            //var changeFxSoundTranspiler = AccessTools.Method(typeof(SelectViewHook), nameof(SelectViewHook.ChangeFxSoundTranspiler));
+            //instance.Patch(changeFxSound, null, null, new HarmonyMethod(changeFxSoundTranspiler));
 
             // 封面音乐Hook
-            var changeFxSound = AccessTools.Method(typeof(SelectView), "ChangeFxSound", new Type[] {
-                typeof(string)
-            });
-            var changeFxSoundTranspiler = AccessTools.Method(typeof(SelectViewHook), nameof(SelectViewHook.ChangeFxSoundTranspiler));
-            instance.Patch(changeFxSound, null, null, new HarmonyMethod(changeFxSoundTranspiler));
-
+            var makeSoneList = AccessTools.Method(typeof(PC_newQuickPlayView), "MakeSoneList");
+            var makeSoneListTranspiler = AccessTools.Method(typeof(PCNewQuickPlayViewHook), nameof(PCNewQuickPlayViewHook.MakeSoneListTranspiler));
+            instance.Patch(makeSoneList, null, null, new HarmonyMethod(makeSoneListTranspiler));
+            
             // 游戏音乐Hook
             var loadPlayMusic = AccessTools.Method(typeof(PlayData), "LoadPlayMusic");
             var loadPlayMusicTranspiler = AccessTools.Method(typeof(PlayDataHook), nameof(PlayDataHook.LoadPlayMusicTranspiler));
@@ -55,10 +60,11 @@ namespace InvaxionCustomSpectrumPlugin
             var readOneMusicMapPrefix = AccessTools.Method(typeof(MazicDataHook), nameof(MazicDataHook.ReadOneMusicMapPrefix));
             instance.Patch(readOneMusicMap, new HarmonyMethod(readOneMusicMapPrefix));
 
-            // 暂停界面封面图Hook
+            // 封面图Hook
             var getCoverSprite = AccessTools.Method(typeof(ExtensionMethods), nameof(ExtensionMethods.getCoverSprite));
             var getCoverSpritePrefix = AccessTools.Method(typeof(ExtensionMethodsHook), nameof(ExtensionMethodsHook.GetCoverSpritePrefix));
             instance.Patch(getCoverSprite, new HarmonyMethod(getCoverSpritePrefix));
+            
         }
     }
 }

@@ -170,6 +170,11 @@ namespace OSU2INVAXION
                 }
             }
 
+            if(!invaxionMap.ContainsKey(0))
+            {
+                invaxionMap.Add(0, null);
+            }
+            
             // 导出谱面
             invaxionMap = invaxionMap.OrderBy(o => o.Key).ToDictionary(o => o.Key, p => p.Value);
             foreach (var i in invaxionMap)
@@ -187,15 +192,18 @@ namespace OSU2INVAXION
                     invaxionMapStr.Append("3,1,\n");
                 }
                 // Track
-                i.Value.Tracks = i.Value.Tracks.OrderBy(o => o.Key).ToDictionary(o => o.Key, p => p.Value);
-                foreach (var j in i.Value.Tracks)
+                if (i.Value != null)
                 {
-                    invaxionMapStr.AppendFormat("{0},", j.Key);
-                    for (var k = 0; k < beatDivisor * 4; k++)
+                    i.Value.Tracks = i.Value.Tracks.OrderBy(o => o.Key).ToDictionary(o => o.Key, p => p.Value);
+                    foreach (var j in i.Value.Tracks)
                     {
-                        invaxionMapStr.Append(j.Value.Nodes.ContainsKey(k) ? j.Value.Nodes[k].Action.ToString() : "00");
+                        invaxionMapStr.AppendFormat("{0},", j.Key);
+                        for (var k = 0; k < beatDivisor * 4; k++)
+                        {
+                            invaxionMapStr.Append(j.Value.Nodes.ContainsKey(k) ? j.Value.Nodes[k].Action.ToString() : "00");
+                        }
+                        invaxionMapStr.AppendFormat(",\n");
                     }
-                    invaxionMapStr.AppendFormat(",\n");
                 }
                 invaxionMapStr.Remove(invaxionMapStr.Length - 2, 2);
                 invaxionMapStr.Append(";\n\n");

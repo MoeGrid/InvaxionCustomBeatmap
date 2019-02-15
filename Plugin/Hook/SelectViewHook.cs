@@ -1,4 +1,5 @@
-﻿using Aquatrax;
+﻿/*
+using Aquatrax;
 using Harmony12;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -19,6 +20,9 @@ namespace InvaxionCustomSpectrumPlugin.Hook
                 tmp.Add(i);
                 if (i.opcode == OpCodes.Call && i.operand.ToString().Contains("GetMainAsset"))
                 {
+
+                    Logger.Log("找到HOOK点");
+
                     var log = AccessTools.Method(typeof(SelectViewHook), nameof(SelectViewHook.ChangeFxSoundHook));
                     tmp.Add(new CodeInstruction(OpCodes.Ldarg_1));
                     tmp.Add(new CodeInstruction(OpCodes.Call, log));
@@ -67,3 +71,4 @@ namespace InvaxionCustomSpectrumPlugin.Hook
         }
     }
 }
+*/

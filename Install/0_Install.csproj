@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>INVAXION_00001.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="dnlib">
       <HintPath>..\lib\dnlib.dll</HintPath>
@@ -85,6 +88,9 @@
       <Project>{692c4bf6-da36-41ee-a587-3f29bbf7941a}</Project>
       <Name>1_Plugin</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="INVAXION_00001.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -36,6 +36,7 @@
     <Compile Include="Hook\ExtensionMethodsHook.cs" />
     <Compile Include="Hook\GlobalConfigHook.cs" />
     <Compile Include="Hook\MazicDataHook.cs" />
+    <Compile Include="Hook\PCNewQuickPlayViewHook.cs" />
     <Compile Include="Hook\PlayDataHook.cs" />
     <Compile Include="Hook\SelectViewHook.cs" />
     <Compile Include="Logger.cs" />
@@ -59,4 +60,7 @@
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(ProjectDir)$(OutDir)InvaxionCustomSpectrumPlugin.dll" "F:\Program Files (x86)\Steam\steamapps\common\音灵 INVAXION\INVAXION_Data\Managed\InvaxionCustomSpectrumPlugin.dll"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
